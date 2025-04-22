@@ -12,20 +12,21 @@ This will creates a `package.json`.
 "type": "module",
 ```
 
-### 2. Install Express
+### 2. Install Express and dotenv
 
 ```
-npm i express
+npm i express dotenv
 ```
 
 Installs Express.js
 
-### 3. Install Nodemon
+### 3. Install Nodemon as Dev dependability
+
 ```
-npm install -D
+npm install nodemon -D
 ```
 
-Nodemon automatically restarts your Node application when file changes are detected.
+Nodemon automatically restarts Node application 
 
 ### 4. Install Prisma
 
@@ -92,15 +93,12 @@ npx prisma db push
 
 Alternative to migrations - directly pushes your Prisma schema to the database.
 
-## Next Steps
+## DB Connected Successfully
 
-1. Define your data models in `prisma/schema.prisma`
-2. Run `npx prisma migrate dev` after each schema change
-3. Use Prisma Client in your Express routes to interact with the database
+```
+npm i bcryptjs
+```
 
-## Useful Commands
-
-- Start your Express app with Nodemon: `npx nodemon your-app.js`
-- Access PostgreSQL shell: `docker exec -it postgresDb psql -U user1`
-- Stop PostgreSQL container: `docker stop postgresDb`
-- Start PostgreSQL container: `docker start postgresDb`
+```
+npm i cookie-parser
+```
