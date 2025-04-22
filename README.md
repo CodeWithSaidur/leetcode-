@@ -28,7 +28,7 @@ npm install nodemon -D
 
 Nodemon automatically restarts Node application 
 
-### 4. Install Prisma
+### 4. Install Prisma and prisma Client
 
 ```
 npm install prisma --save-dev
@@ -61,7 +61,7 @@ This command:
 
 ### 7. Set Database URL
 
-In your `.env` file, add:
+In `.env` file, add:
 
 ```
 DATABASE_URL="postgresql://user1:password1@localhost:5432/postgres"
