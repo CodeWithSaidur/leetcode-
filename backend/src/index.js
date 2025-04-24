@@ -1,20 +1,29 @@
+// index.js
+
 import express from 'express';
 import dotenv from 'dotenv';
-import authRouter from './auth.route.js';
+import cookieParser from 'cookie-parser';
+import authRouter from './routes/auth.route.js';
 
-const app = express();
-
-const PORT = 3000;
-
-app.use(express.json());
+// 1) Load .env into process.env
 dotenv.config();
 
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// 2) Middleware
+app.use(express.json());        // parse JSON bodies
+app.use(cookieParser());        // parse cookies
+
+// 3) Mount your auth routes (note the leading slash!)
+app.use('/api/v1/auth', authRouter);
+
+// 4) (Optional) simple health-check
 app.get('/', (req, res) => {
-  res.send('Hello world!');
+  res.send('🚀 API is up and running');
 });
 
-app.use("api/v1/auth",authRouter);
-
+// 5) Start server
 app.listen(PORT, () => {
-  console.log(`click http://localhost:${PORT}`);
+  console.log(`Server listening → http://localhost:${PORT}`);
 });
