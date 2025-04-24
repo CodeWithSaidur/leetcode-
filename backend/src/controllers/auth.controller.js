@@ -13,25 +13,39 @@ const COOKIE_OPTIONS = {
 // Helper to sign JWT
 function signToken(userId) {
   const secret = process.env.JWT_SECRET;
-  if (!secret) throw new Error('JWT_SECRET not set in environment');
-  return jwt.sign({ id: userId }, secret, { expiresIn: '7d' });
+  if (!secret)
+    throw new Error('JWT_SECRET not set in environment');
+  return jwt.sign({ id: userId }, secret, {
+    expiresIn: '7d',
+  });
 }
 
 export const register = async (req, res) => {
   const { name, email, password } = req.body;
   if (!name || !email || !password) {
-    return res.status(400).json({ message: 'All fields are required' });
+    return res
+      .status(400)
+      .json({ message: 'All fields are required' });
   }
 
   try {
-    const existing = await db.user.findUnique({ where: { email } });
+    const existing = await db.user.findUnique({
+      where: { email },
+    });
     if (existing) {
-      return res.status(400).json({ message: 'User already exists' });
+      return res
+        .status(400)
+        .json({ message: 'User already exists' });
     }
 
     const hashed = await bcrypt.hash(password, 10);
     const user = await db.user.create({
-      data: { name, email, password: hashed, role: UserRole.USER }
+      data: {
+        name,
+        email,
+        password: hashed,
+        role: UserRole.USER,
+      },
     });
 
     const token = signToken(user.id);
@@ -39,7 +53,13 @@ export const register = async (req, res) => {
 
     res.status(201).json({
       message: 'User created',
-      user: { id: user.id, name: user.name, email: user.email, role: user.role, image: user.image }
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        image: user.image,
+      },
     });
   } catch (err) {
     console.error(err);
@@ -50,18 +70,29 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
-    return res.status(400).json({ message: 'Email and password are required' });
+    return res
+      .status(400)
+      .json({ message: 'Email and password are required' });
   }
 
   try {
-    const user = await db.user.findUnique({ where: { email } });
+    const user = await db.user.findUnique({
+      where: { email },
+    });
     if (!user) {
-      return res.status(401).json({ message: 'Invalid credentials' });
+      return res
+        .status(401)
+        .json({ message: 'Invalid credentials' });
     }
 
-    const valid = await bcrypt.compare(password, user.password || '');
+    const valid = await bcrypt.compare(
+      password,
+      user.password || '',
+    );
     if (!valid) {
-      return res.status(401).json({ message: 'Invalid credentials' });
+      return res
+        .status(401)
+        .json({ message: 'Invalid credentials' });
     }
 
     const token = signToken(user.id);
@@ -69,7 +100,13 @@ export const login = async (req, res) => {
 
     res.json({
       message: 'Logged in',
-      user: { id: user.id, name: user.name, email: user.email, role: user.role, image: user.image }
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        image: user.image,
+      },
     });
   } catch (err) {
     console.error(err);
@@ -83,17 +120,16 @@ export const logout = (req, res) => {
 };
 
 export const check = (req, res) => {
-  const token = req.cookies.token;
-  if (!token) {
-    return res.status(401).json({ authenticated: false });
-  }
-
   try {
-    const secret = process.env.JWT_SECRET;
-    if (!secret) throw new Error('JWT_SECRET not set');
-    const payload = jwt.verify(token, secret);
-    res.json({ authenticated: true, userId: payload.id });
-  } catch (err) {
-    res.status(401).json({ authenticated: false });
+    res.status(200).json({
+      success: true,
+      message: 'Authenticated',
+      user: req.user,
+    });
+  } catch (e) {
+    console.error(e);
+    res
+      .status(500)
+      .json({ error: 'Error checking authentication' });
   }
 };

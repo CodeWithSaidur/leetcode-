@@ -5,6 +5,7 @@ import {
   logout,
   check,
 } from '../controllers/auth.controller.js';
+import { authMiddleware } from '../middleware/auth.middleware.js';
 
 const authRouter = express.Router();
 
@@ -15,9 +16,9 @@ authRouter.post('/register', register);
 authRouter.post('/login', login);
 
 // Log out the current user (clears the auth cookie)
-authRouter.post('/logout', logout);
+authRouter.post('/logout', authMiddleware, logout);
 
 // Check authentication status / refresh session
-authRouter.post('/check', check);
+authRouter.post('/check', authMiddleware, check);
 
 export default authRouter;
